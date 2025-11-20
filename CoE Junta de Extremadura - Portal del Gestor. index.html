@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Portal del Gestor – Discapacidad (Junta de Extremadura)</title>
+  <style>
+    :root {
+      --color-bg: #f4f5f7;
+      --color-surface: #ffffff;
+      --color-border: #e5e7eb;
+      --color-text-main: #111827;
+      --color-text-muted: #6b7280;
+      --color-text-soft: #9ca3af;
+      --color-primary: #10b981;
+      --color-primary-dark: #059669;
+      --color-primary-soft: #ecfdf5;
+      --color-accent-blue-border: #bfdbfe;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text-main);
+      overflow-x: hidden;
+    }
+
+    .app {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 240px;
+      background: #111827;
+      color: white;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .sidebar-identity {
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1f2937;
+    }
+    .sidebar-app-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+    .sidebar-person {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      object-fit: cover;
+      border: 2px solid var(--color-primary);
+      flex-shrink: 0;
+    }
+    .sidebar-user-name {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+    .sidebar small {
+      color: #9ca3af;
+      font-size: 12px;
+    }
+    .nav-section {
+      margin-top: 16px;
+    }
+    .nav-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 4px;
+      letter-spacing: 0.04em;
+    }
+    .nav-item {
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .nav-item:hover {
+      background: #1f2937;
+    }
+    .nav-item.active {
+      background: var(--color-primary);
+      color: #064e3b;
+      font-weight: 600;
+    }
+    .nav-item span.badge {
+      background: #1f2937;
+      color: #e5e7eb;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    /* MAIN LAYOUT */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .topbar {
+      height: 64px;
+      background: white;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .logo {
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text-main);
+    }
+    .subtitle {
+      font-size: 13px;
+      color: var(--color-text-muted);
+    }
+    .topbar-user {
+      font-size: 13px;
+      color: #4b5563;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      padding: 16px;
+      gap: 16px;
+      overflow: auto;
+      padding-bottom: 96px;
+    }
+
+    .column {
+      background: var(--color-surface);
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+    .column-left {
+      flex: 1.6;
+    }
+    .column-right {
+      flex: 1;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+      gap: 8px;
+    }
+    .section-header h2 {
+      font-size: 15px;
+      margin: 0;
+      color: var(--color-text-main);
+    }
+    .section-header small {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    /* FILTERS & CHIPS */
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: #374151;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .filter:hover {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+    .chip.ai {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #bbf7d0;
+    }
+    .chip.pm {
+      background: #eef2ff;
+      color: #4c1d95;
+      border: 1px solid #c7d2fe;
+    }
+
+    /* SUMMARY CARDS */
+    .summary-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .summary-card {
+      flex: 1;
+      min-width: 140px;
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 8px 10px;
+      border: 1px solid #e5e7eb;
+    }
+    .summary-label {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 2px;
+    }
+    .summary-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+    }
+    .summary-value-ok {
+      color: #047857;
+    }
+    .summary-value-risk {
+      color: #b91c1c;
+    }
+
+    /* ALERTS */
+    .alerts-card {
+      margin-top: 4px;
+      background: #fffbeb;
+      border-radius: 10px;
+      border: 1px solid #fbbf24;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+    .alerts-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #92400e;
+      margin-bottom: 4px;
+    }
+    .alerts-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .alerts-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 4px;
+      color: #78350f;
+    }
+    .alerts-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      margin-top: 4px;
+      background: #f97316;
+      flex-shrink: 0;
+    }
+    .alerts-item-secondary .alerts-dot {
+      background: #fb923c;
+    }
+
+    /* TABLE */
+    .table-wrapper {
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      overflow-x: auto;
+      /* alto mínimo para que SIEMPRE se vean filas de ejemplo */
+      min-height: 260px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th, td {
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 1px solid #f3f4f6;
+      white-space: normal;
+      vertical-align: top;
+    }
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      font-weight: 600;
+      background: #f9fafb;
+    }
+    tbody tr {
+      transition: background 0.12s ease;
+      cursor: pointer;
+    }
+    tbody tr:hover {
+      background: #f3f4ff;
+    }
+    tr.selected {
+      background: #ecfdf5;
+    }
+    tr.selected:hover {
+      background: #d1fae5;
+    }
+
+    .pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pill-critico {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .pill-normal {
+      background: #e0f2fe;
+      color: #075985;
+    }
+    .pill-baja {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+    .pill-alta {
+      background: #fed7aa;
+      color: #c2410c;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tag-secondary {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .actions-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .action-pill {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease;
+    }
+    .action-pill:hover {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+    }
+
+    /* CARDS & IA BLOCKS */
+    .card {
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      font-size: 12px;
+      background: #ffffff;
+    }
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      color: #111827;
+    }
+    .field-label {
+      font-size: 11px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+    .field-value {
+      font-size: 13px;
+      color: #111827;
+      margin-bottom: 2px;
+    }
+
+    .ai-callout {
+      border-radius: 10px;
+      border: 1px dashed #a7f3d0;
+      background: #ecfdf5;
+      padding: 10px 12px;
+      font-size: 12px;
+    }
+    .ai-title {
+      font-weight: 600;
+      color: #047857;
+      margin-bottom: 4px;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: white;
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    }
+    .btn:hover {
+      background: #f3f4f6;
+    }
+    .btn-primary {
+      background: var(--color-primary);
+      border-color: var(--color-primary-dark);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #059669;
+    }
+
+    /* HIGHLIGHTED SYNTHESIS CARD */
+    .card-synthesis {
+      background: #eff6ff;
+      border-color: var(--color-accent-blue-border);
+    }
+    .card-synthesis h3 {
+      color: #1d4ed8;
+    }
+    .card-synthesis .field-label {
+      color: #4b5563;
+    }
+
+    /* TIMELINE */
+    .timeline-card {
+      margin-top: 4px;
+    }
+    .timeline {
+      list-style: none;
+      margin: 4px 0 0;
+      padding: 0;
+    }
+    .timeline li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #4b5563;
+    }
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #d1d5db;
+    }
+    .timeline li.done::before {
+      background: #10b981;
+    }
+    .timeline li.current::before {
+      background: #1d4ed8;
+    }
+    .timeline li::after {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 14px;
+      width: 2px;
+      height: 12px;
+      background: #e5e7eb;
+    }
+    .timeline li:last-child::after {
+      content: none;
+    }
+
+    /* ASSISTANT FLOATING WIDGET */
+    .assistant {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      right: auto;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .assistant-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #111827;
+      color: #f9fafb;
+      box-shadow: 0 12px 30px rgba(15,23,42,0.35);
+      border: 1px solid #10b981;
+      font-size: 12px;
+      cursor: pointer;
+      outline: none;
+    }
+    .assistant-toggle:hover {
+      background: #020617;
+    }
+
+    .assistant-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: #10b981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #022c22;
+      flex-shrink: 0;
+    }
+    .assistant-toggle-text {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .assistant-panel {
+      width: 360px;
+      max-height: 360px;
+      background: #f9fafb;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(15,23,42,0.35);
+      border: 1px solid #d1d5db;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .assistant.is-open .assistant-panel {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .assistant-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .assistant-header-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .assistant-title {
+      font-weight: 600;
+      font-size: 12px;
+      color: #111827;
+    }
+    .assistant-subtitle {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .assistant-header-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .assistant-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #bbf7d0;
+      white-space: nowrap;
+    }
+    .assistant-close {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f3f4f6;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+      cursor: pointer;
+      color: #6b7280;
+      padding: 0;
+    }
+    .assistant-close:hover {
+      background: #e5e7eb;
+    }
+
+    .assistant-window {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+      max-height: 180px;
+      border: 1px solid #e5e7eb;
+    }
+    .assistant-msg {
+      padding: 4px 6px;
+      border-radius: 8px;
+      max-width: 100%;
+      font-size: 12px;
+    }
+    .assistant-msg-bot {
+      background: #e5f6ff;
+      align-self: flex-start;
+    }
+    .assistant-msg-user {
+      background: #e5e7eb;
+      align-self: flex-end;
+    }
+
+    .assistant-input-row {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .assistant-input {
+      flex: 1;
+      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      outline: none;
+    }
+    .assistant-input:focus {
+      border-color: #9ca3af;
+    }
+    .assistant-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    .assistant-suggestion {
+      font-size: 10px;
+      padding: 3px 6px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f3f4f6;
+      cursor: pointer;
+    }
+    .assistant-suggestion:hover {
+      background: #e5e7eb;
+    }
+
+    @media (max-width: 1200px) {
+      .column-left {
+        flex: 1.4;
+      }
+      .column-right {
+        flex: 1;
+      }
+      .assistant-panel {
+        width: 320px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+      .main {
+        height: auto;
+      }
+      .content {
+        flex-direction: column;
+      }
+      .assistant-panel {
+        width: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-identity">
+      <div class="sidebar-app-title">Portal del Gestor</div>
+      <div class="sidebar-person">
+        <img
+          class="sidebar-avatar"
+          src="victor-avatar.png"
+          alt="Foto de Víctor Sánchez Gallego"
+        />
+        <div>
+          <small class="sidebar-user-name">Víctor Sánchez Gallego</small><br/>
+          <small>Consejería de Salud y Servicios Sociales</small><br/>
+          <small>SEPAD – Dirección Gerencia · CADEX Badajoz</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-title">Navegación</div>
+      <div class="nav-item active">
+        <span>Bandeja de evaluaciones</span>
+        <span class="badge">128</span>
+      </div>
+      <div class="nav-item">
+        <span>Personas y expedientes (Record)</span>
+      </div>
+      <div class="nav-item">
+        <span>Informes, KPIs y Process Mining</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-title">Agentes inteligentes</div>
+      <div class="nav-item">
+        <span>Preclasificación de solicitudes</span>
+      </div>
+      <div class="nav-item">
+        <span>Apoyo a la valoración EVO</span>
+      </div>
+      <div class="nav-item">
+        <span>Seguimiento citas CADEX</span>
+      </div>
+      <div class="nav-item">
+        <span>Generación de resoluciones</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <!-- Logo oficial Junta de Extremadura: guarda "logo-junta.svg" en la misma carpeta que este HTML -->
+        <img
+          class="logo"
+          src="logo-junta.svg"
+          alt="Junta de Extremadura"
+        />
+        <div>
+          <div class="title">Portal del Gestor · Discapacidad</div>
+          <div class="subtitle">
+            Reconocimiento del grado de discapacidad y expedición de tarjeta acreditativa
+          </div>
+        </div>
+      </div>
+      <div class="topbar-user">
+        Centro: CADEX Badajoz<br/>
+        SLA objetivo de resolución: 6 meses
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- Columna izquierda: lista de expedientes -->
+      <section class="column column-left">
+        <div class="section-header">
+          <h2>Expedientes en evaluación</h2>
+          <small>Vista de trabajo tipo Appian · Priorización por SLA y situación</small>
+        </div>
+
+        <div class="filters">
+          <div class="filter">Estado: Pendiente valoración / Informe</div>
+          <div class="filter">Centro: Todos los CADEX</div>
+          <div class="filter">Asignados a mí</div>
+          <div class="filter">Tipo: Primera solicitud, revisiones y traslados</div>
+        </div>
+
+        <div class="chips">
+          <div class="chip ai">Agente de preclasificación: 76% solicitudes priorizadas automáticamente</div>
+          <div class="chip ai">IA del Portal del Gestor: 3 expedientes en situación crítica sugeridos</div>
+          <div class="chip pm">Process Mining: fase más lenta · Informe social</div>
+        </div>
+
+        <div class="summary-cards">
+          <div class="summary-card">
+            <div class="summary-label">Expedientes totales asignados</div>
+            <div class="summary-value">38</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">En plazo</div>
+            <div class="summary-value summary-value-ok">24</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Fuera de plazo</div>
+            <div class="summary-value summary-value-risk">14</div>
+          </div>
+        </div>
+
+        <div class="alerts-card">
+          <div class="alerts-title">Avisos recientes</div>
+          <ul class="alerts-list">
+            <li class="alerts-item">
+              <span class="alerts-dot"></span>
+              <span>4 nuevas solicitudes registradas en la bandeja de entrada pendientes de asignación a CADEX.</span>
+            </li>
+            <li class="alerts-item alerts-item-secondary">
+              <span class="alerts-dot"></span>
+              <span>2 expedientes con respuesta recibida a requerimientos de documentación. Revisa la sección de tareas pendientes.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+            <tr>
+              <th>Nº expediente</th>
+              <th>Nombre y apellidos</th>
+              <th>Estado</th>
+              <th>Prioridad</th>
+              <th>Fecha entrada</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- FILAS DE EJEMPLO EN LA BANDEJA -->
+            <tr class="selected">
+              <td>GD-2025-004512</td>
+              <td>Carmen Pérez Rodríguez</td>
+              <td><span class="tag">Pendiente valoración clínica</span></td>
+              <td><span class="pill pill-critico">Crítica</span></td>
+              <td>12/02/2025</td>
+            </tr>
+            <tr>
+              <td>GD-2025-004513</td>
+              <td>María López García</td>
+              <td><span class="tag">Informe social pendiente</span></td>
+              <td><span class="pill pill-alta">Alta</span></td>
+              <td>08/02/2025</td>
+            </tr>
+            <tr>
+              <td>GD-2025-004514</td>
+              <td>Juan Antonio Sánchez Díaz</td>
+              <td><span class="tag tag-secondary">Documentación incompleta</span></td>
+              <td><span class="pill pill-normal">Media</span></td>
+              <td>20/02/2025</td>
+            </tr>
+            <tr>
+              <td>GD-2025-004515</td>
+              <td>Luis Domínguez Martín</td>
+              <td><span class="tag">En estudio documental</span></td>
+              <td><span class="pill pill-baja">Baja</span></td>
+              <td>05/01/2025</td>
+            </tr>
+            <tr>
+              <td>GD-2025-004516</td>
+              <td>Patricia Fernández Campos</td>
+              <td><span class="tag">Cita CADEX asignada</span></td>
+              <td><span class="pill pill-normal">Media</span></td>
+              <td>03/03/2025</td>
+            </tr>
+            <tr>
+              <td>GD-2025-004517</td>
+              <td>Raúl Serrano Torres</td>
+              <td><span class="tag">Pendiente resolución EVO</span></td>
+              <td><span class="pill pill-alta">Alta</span></td>
+              <td>10/02/2025</td>
+            </tr>
+            <tr>
+              <td>GD-2025-004518</td>
+              <td>Ana Vega Naranjo</td>
+              <td><span class="tag">Pendiente valoración clínica</span></td>
+              <td><span class="pill pill-normal">Media</span></td>
+              <td>18/03/2025</td>
+            </tr>
+            <tr>
+              <td>GD-2025-004519</td>
+              <td>Sebastián Hernández Jiménez</td>
+              <td><span class="tag">Valoración completada – en resolución</span></td>
+              <td><span class="pill pill-critico">Crítica</span></td>
+              <td>15/01/2025</td>
+            </tr>
+            <tr>
+              <td>GD-2025-004520</td>
+              <td>Víctor Cabrera Blanco</td>
+              <td><span class="tag">Documentación completa</span></td>
+              <td><span class="pill pill-baja">Baja</span></td>
+              <td>01/04/2025</td>
+            </tr>
+            <tr>
+              <td>GD-2025-004521</td>
+              <td>Dolores Ruiz Aparicio</td>
+              <td><span class="tag">Pendiente cita CADEX</span></td>
+              <td><span class="pill pill-normal">Media</span></td>
+              <td>22/03/2025</td>
+            </tr>
+            <tr>
+              <td>GD-2025-004522</td>
+              <td>Miguel Ángel Rivero León</td>
+              <td><span class="tag">Informe social en elaboración</span></td>
+              <td><span class="pill pill-alta">Alta</span></td>
+              <td>25/02/2025</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="actions-row">
+          <div class="action-pill">Acción rápida: Programar cita CADEX</div>
+          <div class="action-pill">Acción rápida: Registrar informe EVO</div>
+          <div class="action-pill">Acción rápida: Generar propuesta de resolución</div>
+          <div class="action-pill">Acción rápida: Iniciar revisión por agravamiento</div>
+        </div>
+      </section>
+
+      <!-- Columna derecha: detalle + IA -->
+      <section class="column column-right">
+        <div class="section-header">
+          <h2>Detalle del expediente seleccionado</h2>
+          <small>GD-2025-004512 · CADEX Badajoz</small>
+        </div>
+
+        <div class="card">
+          <h3>Resumen de la persona solicitante</h3>
+          <div class="field-label">Nombre y apellidos</div>
+          <div class="field-value">Carmen Pérez Rodríguez · 51 años</div>
+
+          <div class="field-label">Situación</div>
+          <div class="field-value">
+            Solicita reconocimiento del grado de discapacidad y tarjeta acreditativa.
+          </div>
+
+          <div class="field-label">Fecha de entrada de la solicitud</div>
+          <div class="field-value">
+            12/02/2025
+          </div>
+
+          <div class="field-label">Fecha de última actuación</div>
+          <div class="field-value">
+            24/03/2025 · Revisión de documentación médica y priorización por SLA.
+          </div>
+
+          <div class="field-label">CADEX responsable</div>
+          <div class="field-value">
+            CADEX Badajoz · Equipo de Valoración y Orientación 2 (EVO)
+          </div>
+
+          <div class="field-label">Documentación aportada</div>
+          <div class="field-value">
+            Informes de Medicina Interna y Rehabilitación · Informe psicológico 2024 · Pruebas diagnósticas recientes.
+          </div>
+
+          <div class="field-label">Tipo de expediente</div>
+          <div class="field-value">
+            Primera solicitud · Prioridad crítica por impacto funcional y situación laboral.
+          </div>
+        </div>
+
+        <div class="ai-callout">
+          <div class="ai-title">Propuesta del agente de apoyo a la valoración</div>
+          <div>
+            · Documentación médica suficiente para una primera valoración clínica.<br/>
+            · Falta informe social actualizado (&lt; 6 meses).<br/>
+            · Recomendación: mantener prioridad crítica por limitaciones en movilidad y actividad laboral.
+          </div>
+          <div class="button-row">
+            <button class="btn">Ver checklist completo (Record Action)</button>
+            <button class="btn btn-primary">Aceptar propuesta y agendar cita CADEX</button>
+          </div>
+        </div>
+
+        <div class="card card-synthesis">
+          <h3>Síntesis de valoración preliminar</h3>
+          <div class="field-label">Grado sugerido por el agente (no vinculante)</div>
+          <div class="field-value">
+            Rango estimado: 45% – 55% (a confirmar por el Equipo de Valoración y Orientación – EVO).
+          </div>
+
+          <div class="field-label">Alertas</div>
+          <div class="field-value">
+            · Revisar coherencia entre informe médico y situación laboral declarada.<br/>
+            · Verificar datos de convivencia y apoyos familiares en el informe social.<br/>
+            · Comprobar si existen revisiones previas en el histórico del expediente.
+          </div>
+
+          <div class="field-label">Próximos pasos sugeridos</div>
+          <div class="field-value">
+            1) Completar informe social desde la acción relacionada "Registrar informe social".<br/>
+            2) Confirmar cita de valoración presencial / telemática en CADEX.<br/>
+            3) Generar propuesta de resolución con motivación asistida por IA.
+          </div>
+        </div>
+
+        <div class="card timeline-card">
+          <h3>Estado del trámite</h3>
+          <ul class="timeline">
+            <li class="done">Solicitud registrada y validada</li>
+            <li class="done">Documentación médica revisada</li>
+            <li class="current">Informe social pendiente de actualización</li>
+            <li>Pendiente valoración EVO en CADEX Badajoz</li>
+            <li>Pendiente emisión de resolución y tarjeta acreditativa</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- Asistente flotante para el gestor -->
+<div class="assistant" id="assistant">
+  <button class="assistant-toggle" id="assistantToggle" type="button">
+    <span class="assistant-icon">AG</span>
+    <span class="assistant-toggle-text">Asistente para el Gestor</span>
+  </button>
+
+  <div class="assistant-panel" id="assistantPanel">
+    <div class="assistant-header">
+      <div class="assistant-header-text">
+        <div class="assistant-title">Asistente para el Gestor</div>
+        <div class="assistant-subtitle">Ayuda contextual sobre expedientes y SLA</div>
+      </div>
+      <div class="assistant-header-actions">
+        <div class="assistant-badge">JuntaEx · IA de apoyo</div>
+        <button class="assistant-close" id="assistantClose" type="button" aria-label="Cerrar asistente">×</button>
+      </div>
+    </div>
+
+    <div class="assistant-window" id="assistantWindow">
+      <div class="assistant-msg assistant-msg-bot">
+        El expediente GD-2025-004512 acumula 10 días de retraso sobre el SLA de valoración.
+        Te recomiendo priorizarlo en la bandeja y comprobar si ya se ha solicitado el informe social actualizado.
+      </div>
+      <div class="assistant-msg assistant-msg-user">
+        Resúmeme el estado actual para dejar una nota interna en el expediente.
+      </div>
+      <div class="assistant-msg assistant-msg-bot">
+        Estado: pendiente de valoración clínica, con documentación médica completa y a la espera de informe social.
+        Si se mantiene la prioridad crítica, el plazo orientativo para resolución es de 4–6 semanas desde la recepción del informe social.
+      </div>
+      <div class="assistant-msg assistant-msg-user">
+        Propón próximos pasos para dejar el expediente encaminado hoy.
+      </div>
+      <div class="assistant-msg assistant-msg-bot">
+        Sugerencia: 1) Registrar requerimiento de informe social si aún no se ha enviado. 2) Verificar disponibilidad de agendas de CADEX Badajoz para programar cita de valoración. 3) Añadir recordatorio interno para revisar el expediente en cuanto llegue el informe social.
+      </div>
+    </div>
+
+    <div class="assistant-input-row">
+      <input
+        class="assistant-input"
+        id="assistantInput"
+        placeholder="Preguntar al asistente (p. ej. 'Detectar expedientes fuera de plazo')"
+      />
+      <button class="btn btn-primary" id="assistantSend" type="button">Enviar</button>
+    </div>
+
+    <div class="assistant-suggestions">
+      <button class="assistant-suggestion" type="button">Identificar expedientes fuera de plazo</button>
+      <button class="assistant-suggestion" type="button">Listar pendientes de informe social</button>
+      <button class="assistant-suggestion" type="button">Sugerir próximos pasos de tramitación</button>
+      <button class="assistant-suggestion" type="button">Ver impacto en indicadores SLA</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var assistant = document.getElementById('assistant');
+    var toggle = document.getElementById('assistantToggle');
+    var closeBtn = document.getElementById('assistantClose');
+    var input = document.getElementById('assistantInput');
+    var sendBtn = document.getElementById('assistantSend');
+    var windowEl = document.getElementById('assistantWindow');
+    var suggestionButtons = document.querySelectorAll('.assistant-suggestion');
+    var rows = document.querySelectorAll('.table-wrapper tbody tr');
+
+    if (assistant && toggle && closeBtn) {
+      function toggleAssistant() {
+        assistant.classList.toggle('is-open');
+        if (assistant.classList.contains('is-open') && input) {
+          input.focus();
+        }
+      }
+
+      toggle.addEventListener('click', toggleAssistant);
+      closeBtn.addEventListener('click', function () {
+        assistant.classList.remove('is-open');
+      });
+    }
+
+    function appendUserMessage(text) {
+      if (!text || !windowEl) return;
+      var msg = document.createElement('div');
+      msg.className = 'assistant-msg assistant-msg-user';
+      msg.textContent = text;
+      windowEl.appendChild(msg);
+      windowEl.scrollTop = windowEl.scrollHeight;
+    }
+
+    function handleSend() {
+      if (!input) return;
+      var text = input.value.trim();
+      if (!text) return;
+      appendUserMessage(text);
+      input.value = '';
+    }
+
+    if (sendBtn) {
+      sendBtn.addEventListener('click', handleSend);
+    }
+
+    if (input) {
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleSend();
+        }
+      });
+    }
+
+    suggestionButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var text = btn.textContent || '';
+        if (!text || !input) return;
+        input.value = text;
+        input.focus();
+      });
+    });
+
+    // Selección de filas de la tabla
+    if (rows && rows.length) {
+      rows.forEach(function (row) {
+        row.addEventListener('click', function () {
+          rows.forEach(function (r) {
+            r.classList.remove('selected');
+          });
+          row.classList.add('selected');
+        });
+      });
+    }
+  })();
+</script>
+</body>
+</html>
